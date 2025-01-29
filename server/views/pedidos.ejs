@@ -1,0 +1,12 @@
+<ul>
+    <% pedidos.forEach(pedido => { %>
+        <li>
+            <strong><%= pedido.nome %></strong> - <%= pedido.descricao %> (<%= pedido.categoria %>)
+            <form action="/lido/<%= pedido.id %>" method="POST">
+                <button type="submit">Marcar como lido</button>
+            </form>
+        </li>
+    <% }); %>
+</ul>
+<a href="/historico">Ver histórico</a>
+<a href="/logout">Sair</a>
