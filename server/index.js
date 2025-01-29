@@ -13,7 +13,8 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views')); // A pasta "views" deve estar no mesmo nível que "server" (ou no caminho especificado)
 
 // Configuração de arquivos estáticos (CSS, JS, imagens)
-app.use(express.static(path.join(__dirname, 'public'))); // Corrigido para garantir que a pasta "public" seja encontrada corretamente
+app.use(express.static(path.join(__dirname, '../public')));
+
 
 // Configuração do body-parser para lidar com requisições POST
 app.use(bodyParser.urlencoded({ extended: true }));
