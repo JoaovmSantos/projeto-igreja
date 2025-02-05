@@ -34,7 +34,7 @@ section.card-principal{
 
 .navbar-brand {
     font-size: 1.2rem;
-    color: #333;
+    color: #f1f1f1;
 }
 
 .card {
@@ -96,4 +96,16 @@ section.card-principal{
 
  .formulario h2{
     margin-bottom: 20px;
+ }
+
+form a#cadastrar{
+    float: right;
+    text-decoration: none;
+    color: blue;
+    background-color: transparent;
+ }
+
+ form a#cadastrar:hover{
+    transition: ease 1s;
+    text-decoration: underline;
  }

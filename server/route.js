@@ -59,6 +59,11 @@ router.post('/login', (req, res) => {
     });
 });
 
+router.get('/pedidoOracao', (req, res) => {
+    res.render('add_pedido');
+});
+
+
 router.post('/pedidoOracao', (req, res) => {
     const { nome, beneficiado, categoria, descricao } = req.body;
 
@@ -69,15 +74,16 @@ router.post('/pedidoOracao', (req, res) => {
 
     db.query(
         'INSERT INTO pedidos (nome, beneficiado, descricao, categoria, lido, data_pedido) VALUES (?, ?, ?, ?, ?, NOW())',
-        [`${nome} - ${beneficiado}`, descricao.trim(), categoria, false],
+        [nome, beneficiado || nome, descricao.trim(), categoria, false],
         (err) => {
             if (err) {
                 console.error(err);
                 return res.status(500).send('Erro ao adicionar o pedido de oração');
             }
-            res.redirect('/');
+            res.redirect('/pedidoOracao');
         }
     );
+    
 });
 
 router.get('/pedidos', verificarAutenticacao, (req, res) => {
