@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fé Conectada</title>
+    <!-- Link para o Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<!-- Barra de navegação -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid d-flex align-items-center">
+    
+    <!-- Imagem pequena em círculo -->
+    <img src="/images/adbocz.jpeg" alt="Logo" class="logo-img me-2">
+    
+    <a class="navbar-brand fw-bold" href="#">Assembleia de Deus Min. Belém - Osvaldo Cruz</a>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+</nav>
+
+<section class="card-principal">
+    <div class="card formulario">
+        <div class="container mt-4">
+            <h2>Faça o seu pedido de oração abaixo:</h2>
+            <form action="/pedidoOracao" method="POST">   
+
+                <div class="row">
+                    <div class="mb-3 col-md-4">
+                        <label for="nome" class="frm-label">Seu Nome:</label>
+                            <input type="text" class="form-control" id="nome" name="nome" required>
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="beneficiado" class="form-label">Para quem deseja oração?:</label>
+                        <input type="text" class="form-control" id="beneficiado" name="beneficiado">
+                    </div>
+                    <div class="mb-3 col-md-4">
+                        <label for="categoria" class="form-label">Categoria:</label>
+                            <select class="form-control" id="categoria" name="categoria" required>
+                                <option value="Cura">Cura</option>
+                                <option value="Libertação">Libertação</option>
+                                <option value="Causa na Justiça">Causa na Justiça</option>
+                                <option value="Porta de Emprego">Porta de Emprego</option>
+                                <option value="Aniversário">Aniversário</option>
+                                <option value="Mudança">Mudança</option>
+                                <option value="Viagem">Viagem</option>
+                                <option value="Milagre">Milagre</option>
+                            </select>
+                    </div>
+                </div>
+            
+                <div class="row">
+                    
+                    <div class="mb-3 col-md-8">
+                        <label for="descricao" class="form-label">Descreva seu pedido de oração:</label>
+                            <textarea class="form-control" id="descricao" name="descricao" rows="3" maxlength="200" required></textarea>
+                            <small class="text-muted">Máximo de 30 palavras.</small>
+                    </div>
+                </div>
+            
+                <button type="submit" class="btn btn-primary">Enviar Pedido</button>
+                <a href="/">Voltar</a>
+            </form>
+        </div>
+    </div>
+</section>
+<!-- Link para o Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
