@@ -109,3 +109,15 @@ form a#cadastrar{
     transition: ease 1s;
     text-decoration: underline;
  }
+
+ div#login{
+   text-align: center;
+ }
+
+ div#login h4{
+   color: #232323;
+ }
+
+ div#login h5{
+   color: #232323;
+ }
