@@ -121,3 +121,13 @@ form a#cadastrar{
  div#login h5{
    color: #232323;
  }
+
+ .pedido h3{
+   color: black;
+   font-size: 1.2rem;
+ }
+
+#pedido{
+   padding: 10px;
+   max-width: fit-content;
+ }

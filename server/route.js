@@ -33,31 +33,22 @@ router.post('/login', (req, res) => {
         return res.status(400).send('Usuário e senha são obrigatórios');
     }
 
-    db.query('SELECT * FROM pastor WHERE usuario = ?', [usuario], (err, results) => {
+    db.query('SELECT * FROM pastor WHERE usuario = ? AND senha = ?', [usuario, senha], (err, results) => {
         if (err) {
             console.error(err);
             return res.status(500).send('Erro no servidor ao buscar usuário');
         }
 
         if (results.length === 0) {
-            return res.status(404).send('Usuário não encontrado');
+            return res.status(401).send('Usuário ou senha incorretos');
         }
 
-        bcrypt.compare(senha, results[0].senha, (err, match) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).send('Erro ao verificar senha');
-            }
-
-            if (match) {
-                req.session.pastor = true;
-                return res.redirect('/pedidos');
-            } else {
-                return res.status(401).send('Senha incorreta');
-            }
-        });
+        req.session.pastor = true;
+        res.redirect('/pedidos');
     });
 });
+
+
 
 router.get('/cadastro', (req, res) => {
     res.render('cadastro');
@@ -66,24 +57,33 @@ router.get('/cadastro', (req, res) => {
 router.post('/cadastro', (req, res) => {
     const { nome, cargo, usuario, senha } = req.body;
 
-    if (!nome || !usuario || !senha) {
-        return res.status(400).send('Nome, usuário e senha são obrigatórios.');
-    }
-
-    const salt = bcrypt.genSaltSync(10);
-    const senhaCriptografada = bcrypt.hashSync(senha, salt);
-
-    db.query(
-        'INSERT INTO pastor (nome, cargo, usuario, senha) VALUES (?, ?, ?, ?)',
-        [nome.trim(), cargo?.trim() | 'Sem Cargo', usuario.trim(), senhaCriptografada],
-        (err) => {
-            if (err) {
-                console.error('Erro ao cadastrar pastor:', err);
-                return res.status(500).send('Erro ao realizar o cadastro. Verifique se o usuário já existe.');
-            }
-            res.redirect('/login');
+    db.query('SELECT id FROM pastor WHERE usuario = ?', [usuario.trim()], (err, results) => {
+        if (err) {
+            console.error('Erro ao verificar usuário:', err);
+            return res.status(500).send('Erro no servidor');
         }
-    )
+    
+        if (results.length > 0) {
+            return res.status(400).send('Usuário já cadastrado. Escolha outro nome de usuário.');
+        }
+    
+        // Se não existir, cadastra
+        const salt = bcrypt.genSaltSync(10);
+        const senhaCriptografada = bcrypt.hashSync(senha, salt);
+    
+        db.query(
+            'INSERT INTO pastor (nome, cargo, usuario, senha) VALUES (?, ?, ?, ?)',
+            [nome.trim(), cargo?.trim() || 'Sem Cargo', usuario.trim(), senhaCriptografada],
+            (err) => {
+                if (err) {
+                    console.error('Erro ao cadastrar pastor:', err);
+                    return res.status(500).send('Erro ao realizar o cadastro.');
+                }
+                res.redirect('/login');
+            }
+        );
+    });
+    
 });
 
 

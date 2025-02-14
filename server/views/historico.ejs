@@ -41,9 +41,8 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>ID</th>
+                <th>Número do Pedido</th>
                 <th>Nome</th>
-                <th>Descrição</th>
                 <th>Categoria</th>
                 <th>Ações</th>
             </tr>
@@ -53,12 +52,9 @@
                 <tr>
                     <td><%= pedido.id %></td>
                     <td><%= pedido.nome %></td>
-                    <td><%= pedido.descricao %></td>
                     <td><%= pedido.categoria %></td>
                     <td>
-                        <form action="/lido/<%= pedido.id %>" method="POST">
-                            <button type="submit" class="btn btn-success">Marcar como Lido</button>
-                        </form>
+                            <button type="" class="btn btn-success">Lido</button>
                     </td>
                 </tr>
             <% }) %>
