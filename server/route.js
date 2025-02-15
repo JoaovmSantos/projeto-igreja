@@ -17,7 +17,6 @@ router.get('/', (req, res) => {
             console.error(err);
             return res.status(500).send('Erro ao buscar pedidos');
         }
-
         res.render('index', { pedidos: results });
     });
 });
@@ -48,48 +47,9 @@ router.post('/login', (req, res) => {
     });
 });
 
-
-router.get('/cadastro', (req, res) => {
-    res.render('cadastro');
-});
-
-// router.post('/cadastro', (req, res) => {
-//     const { nome, cargo, usuario, senha } = req.body;
-
-//     db.query('SELECT id FROM pastor WHERE usuario = ?', [usuario.trim()], (err, results) => {
-//         if (err) {
-//             console.error('Erro ao verificar usuário:', err);
-//             return res.status(500).send('Erro no servidor');
-//         }
-    
-//         if (results.length > 0) {
-//             return res.status(400).send('Usuário já cadastrado. Escolha outro nome de usuário.');
-//         }
-    
-//         // Se não existir, cadastra
-//         const salt = bcrypt.genSaltSync(10);
-//         const senhaCriptografada = bcrypt.hashSync(senha, salt);
-    
-//         db.query(
-//             'INSERT INTO pastor (nome, cargo, usuario, senha) VALUES (?, ?, ?, ?)',
-//             [nome.trim(), cargo?.trim() || 'Sem Cargo', usuario.trim(), senhaCriptografada],
-//             (err) => {
-//                 if (err) {
-//                     console.error('Erro ao cadastrar pastor:', err);
-//                     return res.status(500).send('Erro ao realizar o cadastro.');
-//                 }
-//                 res.redirect('/login');
-//             }
-//         );
-//     });
-    
-// });
-
-
 router.get('/pedidoOracao', (req, res) => {
     res.render('add_pedido');
 });
-
 
 router.post('/pedidoOracao', (req, res) => {
     const { nome, beneficiado, categoria } = req.body;
@@ -113,7 +73,6 @@ router.post('/pedidoOracao', (req, res) => {
     );
 });
 
-
 router.get('/pedidos', verificarAutenticacao, (req, res) => {
     db.query('SELECT * FROM pedidos WHERE lido = FALSE', (err, results) => {
         if (err) {
@@ -136,6 +95,7 @@ router.post('/lido/:id', verificarAutenticacao, (req, res) => {
     });
 });
 
+// Página do histórico
 router.get('/historico', verificarAutenticacao, (req, res) => {
     db.query('SELECT * FROM pedidos WHERE lido = TRUE', (err, results) => {
         if (err) {
@@ -146,6 +106,20 @@ router.get('/historico', verificarAutenticacao, (req, res) => {
     });
 });
 
+// Rota para excluir pedidos do histórico
+router.post('/historico/delete/:id', verificarAutenticacao, (req, res) => {
+    const pedidoId = req.params.id;
+
+    db.query('DELETE FROM pedidos WHERE id = ?', [pedidoId], (err) => {
+        if (err) {
+            console.error('Erro ao excluir pedido:', err);
+            return res.status(500).send('Erro ao excluir o pedido.');
+        }
+        res.redirect('/historico');
+    });
+});
+
+// Logout do sistema
 router.get('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {

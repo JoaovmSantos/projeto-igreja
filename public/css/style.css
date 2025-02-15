@@ -140,7 +140,20 @@ form a#cadastrar{
 
 #pedido{
    padding: 10px;
-   max-width: fit-content;
+   min-width: 55vw;
+ }
+
+ p#categoria{
+   padding: 5px 10px;
+   font-weight: 400;
+ }
+
+ button#lido{
+   max-width: 200px;
+   text-align: center;
+ }
+ form#lido{
+   text-align: center;
  }
 
  ::-webkit-scrollbar {

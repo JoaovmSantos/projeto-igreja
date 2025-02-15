@@ -7,18 +7,15 @@
     <!-- Link para o Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="shortcut icon" type="imagex/png" href="/images/oracao.png">
 </head>
 <body>
 
 <!-- Barra de navegação -->
 <nav class="navbar navbar-expand-lg" id="cabeçalho">
   <div class="container-fluid d-flex align-items-center">
-    
-    <!-- Imagem pequena em círculo -->
     <img src="/images/assembleia.png" alt="Logo" class="logo-img me-2">
-    
     <a class="navbar-brand fw-bold" href="/">Assembleia de Deus Min. Belém - Osvaldo Cruz</a>
-    
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegação">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -26,35 +23,40 @@
 </nav>
 
 <div class="container mt-4">
-
-    <!-- Título da Página -->
     <h1 class="text-center mb-4">Pedidos de Oração Registrados</h1>
 
-    <!-- Tabela de Pedidos -->
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Número do Pedido</th>
-                <th>Nome</th>
-                <th>Categoria</th>
+                <th>Data:</th>
+                <th>Pedido:</th>
+                <th>Status</th>
                 <th>Ações</th>
             </tr>
         </thead>
         <tbody>
             <% pedidos.forEach(pedido => { %>
                 <tr>
-                    <td><%= pedido.id %></td>
-                    <td><%= pedido.nome %></td>
-                    <td><%= pedido.categoria %></td>
                     <td>
-                        <button type="" class="btn btn-success">Lido</button>
-                        <button type="" class="btn btn-danger">Apagar</button>
+                        <%= new Date(pedido.data_pedido).toLocaleString("pt-BR", { 
+                          day: "2-digit", 
+                          month: "2-digit", 
+                          year: "numeric", 
+                          hour: "2-digit", 
+                          minute: "2-digit" 
+                        }) %>
+                    </td>
+                    <td>Pedido feito por <%= pedido.nome %> em favor de <%= pedido.beneficiado %> por <%= pedido.categoria %></td>
+                    <td><span class="badge bg-success">✔ Lido</span></td>
+                    <td>
+                        <form action="/historico/delete/<%= pedido.id %>" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm">Apagar</button>
+                        </form>
                     </td>
                 </tr>
             <% }) %>
         </tbody>
     </table>
-
 </div>
 
 <!-- Link para o Bootstrap JS -->
