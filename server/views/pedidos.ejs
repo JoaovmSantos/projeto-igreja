@@ -27,28 +27,30 @@
 <div class="container mt-4">
     <h2 class="text-center mb-4">Pedidos de Oração</h2>
 
-    <div class="row justify-content-center pedido">
-        <% pedidos.forEach(pedido => { %>
-            <div class="col-md-12">
-                <div class="card mb-3 shadow-sm" id="pedido">
-                    <div class="card-body">
-                        <span class="badge bg-primary"><%= pedido.categoria %></span>
-                        <h3 class="card-title fw-thin"><%= pedido.nome %> pede oração em favor de <%= pedido.beneficiado %> por <%= pedido.categoria %> </h3>
-
-                        <form action="/lido/<%= pedido.id %>" method="POST" class="mt-3">
-                            <button type="submit" class="btn btn-success w-100">Marcar como lido</button>
-                        </form>
-
+    <section class="card-principal">
+        <div class="row justify-content-center pedido">
+            <% pedidos.forEach(pedido => { %>
+                <div class="col-md-12">
+                    <div class="card mb-3 shadow-sm" id="pedido">
+                        <div class="card-body">
+                            <span class="badge bg-primary"><%= pedido.categoria %></span>
+                            <h3 class="card-title fw-thin"><%= pedido.nome %> pede oração em favor de <%= pedido.beneficiado %> por <%= pedido.categoria %> </h3>
+                            <form action="/lido/<%= pedido.id %>" method="POST" class="mt-3">
+                                <button type="submit" class="btn btn-success w-100">Marcar como lido</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-        <% }); %>
-    </div>
+            <% }); %>
+        </div>
+    </section>
 
-    <div class="text-center mt-4">
-        <a href="/historico" class="btn btn-secondary me-2">Ver histórico</a>
-        <a href="/logout" class="btn btn-danger">Sair</a>
-    </div>
+    <section class="card-principal">
+        <div class="text-center mt-4">
+            <a href="/historico" class="btn btn-secondary me-2">Ver histórico</a>
+            <a href="/logout" class="btn btn-danger">Sair</a>
+        </div>
+    </section>
 </div>
 
 <!-- Link para o Bootstrap JS -->
