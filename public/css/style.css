@@ -9,9 +9,13 @@
 }
 
 body {
-    background: radial-gradient(circle, rgba(46,119,154,1) 57%, rgba(62,148,186,1) 78%, rgba(18,70,121,1) 100%);
+    background: #9FB4C7;
     height: 100vh;
     width: 100%;
+}
+
+nav#cabeçalho{
+   background-color: #2D3047;
 }
 
 section.card-principal{
@@ -28,8 +32,11 @@ section.card-principal{
     height: 60px;
     border-radius: 50%;
     object-fit: contain;
-    border: 2px solid #efefef;
-    filter: drop-shadow(2px 4px 2px #efefefaa);
+    border: 3px solid #9FB4C7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: inset 3px 5px 5px #9FB4C7;
 }
 
 .navbar-brand {
@@ -37,10 +44,14 @@ section.card-principal{
     color: #f1f1f1;
 }
 
+.navbar-brand:hover{
+   color: #9FB4C7;
+}
+
 .card {
     width: 90%;
     max-width: 70%; 
-    background-color: #ffffffdc;
+    background-color: #ffffffbe;
     color: white;
     padding: 20px;
     border-radius: 10px;
@@ -130,4 +141,24 @@ form a#cadastrar{
 #pedido{
    padding: 10px;
    max-width: fit-content;
+ }
+
+ ::-webkit-scrollbar {
+   width: 10px;
+ }
+ 
+ /* Track */
+ ::-webkit-scrollbar-track {
+   background: #2D3047; 
+ }
+  
+ /* Handle */
+ ::-webkit-scrollbar-thumb {
+   background: #9FB4C7; 
+   size: 10px;
+ }
+ 
+ /* Handle on hover */
+ ::-webkit-scrollbar-thumb:hover {
+   background: #2D3047; 
  }

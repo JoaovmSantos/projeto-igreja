@@ -49,42 +49,41 @@ router.post('/login', (req, res) => {
 });
 
 
-
 router.get('/cadastro', (req, res) => {
     res.render('cadastro');
 });
 
-router.post('/cadastro', (req, res) => {
-    const { nome, cargo, usuario, senha } = req.body;
+// router.post('/cadastro', (req, res) => {
+//     const { nome, cargo, usuario, senha } = req.body;
 
-    db.query('SELECT id FROM pastor WHERE usuario = ?', [usuario.trim()], (err, results) => {
-        if (err) {
-            console.error('Erro ao verificar usuário:', err);
-            return res.status(500).send('Erro no servidor');
-        }
+//     db.query('SELECT id FROM pastor WHERE usuario = ?', [usuario.trim()], (err, results) => {
+//         if (err) {
+//             console.error('Erro ao verificar usuário:', err);
+//             return res.status(500).send('Erro no servidor');
+//         }
     
-        if (results.length > 0) {
-            return res.status(400).send('Usuário já cadastrado. Escolha outro nome de usuário.');
-        }
+//         if (results.length > 0) {
+//             return res.status(400).send('Usuário já cadastrado. Escolha outro nome de usuário.');
+//         }
     
-        // Se não existir, cadastra
-        const salt = bcrypt.genSaltSync(10);
-        const senhaCriptografada = bcrypt.hashSync(senha, salt);
+//         // Se não existir, cadastra
+//         const salt = bcrypt.genSaltSync(10);
+//         const senhaCriptografada = bcrypt.hashSync(senha, salt);
     
-        db.query(
-            'INSERT INTO pastor (nome, cargo, usuario, senha) VALUES (?, ?, ?, ?)',
-            [nome.trim(), cargo?.trim() || 'Sem Cargo', usuario.trim(), senhaCriptografada],
-            (err) => {
-                if (err) {
-                    console.error('Erro ao cadastrar pastor:', err);
-                    return res.status(500).send('Erro ao realizar o cadastro.');
-                }
-                res.redirect('/login');
-            }
-        );
-    });
+//         db.query(
+//             'INSERT INTO pastor (nome, cargo, usuario, senha) VALUES (?, ?, ?, ?)',
+//             [nome.trim(), cargo?.trim() || 'Sem Cargo', usuario.trim(), senhaCriptografada],
+//             (err) => {
+//                 if (err) {
+//                     console.error('Erro ao cadastrar pastor:', err);
+//                     return res.status(500).send('Erro ao realizar o cadastro.');
+//                 }
+//                 res.redirect('/login');
+//             }
+//         );
+//     });
     
-});
+// });
 
 
 router.get('/pedidoOracao', (req, res) => {
