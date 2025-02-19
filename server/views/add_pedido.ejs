@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="shortcut icon" type="imagex/png" href="/images/oracao.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 
@@ -30,7 +31,7 @@
     <div class="card formulario">
         <div class="container mt-4">
             <h2>Faça o seu pedido de oração abaixo:</h2>
-            <form action="/pedidoOracao" method="POST">   
+            <form action="/pedidoOracao" method="POST" id="formPedido">   
 
                 <div class="row">
                     <div class="mb-3 col-md-4">
@@ -68,5 +69,51 @@
 </section>
 <!-- Link para o Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("#formPedido");
+
+    form.addEventListener("submit", function (event) {
+        event.preventDefault(); // Impede o envio tradicional do formulário
+
+        const formData = new FormData(form);
+
+        fetch("/pedidoOracao", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    title: "Pedido enviado!",
+                    text: "Seu pedido de oração foi registrado com sucesso.",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    form.reset(); // Limpa o formulário após o sucesso
+                });
+            } else {
+                Swal.fire({
+                    title: "Erro!",
+                    text: data.message,
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        })
+        .catch(error => {
+            console.error("Erro:", error);
+            Swal.fire({
+                title: "Erro!",
+                text: "Ocorreu um erro ao enviar o pedido.",
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        });
+    });
+});
+
+</script>
 </body>
 </html>
