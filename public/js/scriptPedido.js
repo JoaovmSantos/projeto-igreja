@@ -1,14 +1,22 @@
+// Popup para enviar pedidos de oração
 document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector("#formPedido");
+const form = document.querySelector("#formPedido");
 
     form.addEventListener("submit", function (event) {
-        event.preventDefault(); // Impede o envio tradicional do formulário
+        event.preventDefault();
 
         const formData = new FormData(form);
+        const formObject = Object.fromEntries(formData.entries()); 
+        const jsonString = JSON.stringify(formObject);
+
+        console.log("Enviando dados:", formObject); // Para depuração
 
         fetch("/pedidoOracao", {
             method: "POST",
-            body: formData
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: jsonString
         })
         .then(response => response.json())
         .then(data => {
@@ -19,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     icon: "success",
                     confirmButtonText: "OK"
                 }).then(() => {
-                    form.reset(); // Limpa o formulário após o sucesso
+                    form.reset();
                 });
             } else {
                 Swal.fire({

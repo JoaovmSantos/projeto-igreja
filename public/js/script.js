@@ -1,3 +1,4 @@
+// Popup para a tela de login
 document.getElementById('loginForm').addEventListener('submit', async function(event) {
     event.preventDefault(); // Impede o envio tradicional do formulário
 

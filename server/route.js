@@ -4,6 +4,7 @@ const db = require('./db');
 
 const router = express.Router();
 
+// Middleware para verificar autenticação
 function verificarAutenticacao(req, res, next) {
     if (!req.session.pastor) {
         return res.redirect('/login');
@@ -11,20 +12,25 @@ function verificarAutenticacao(req, res, next) {
     next();
 }
 
+// Página inicial (lista de pedidos não lidos)
 router.get('/', (req, res) => {
     db.query('SELECT * FROM pedidos WHERE lido = FALSE', (err, results) => {
         if (err) {
-            console.error(err);
+            console.error('Erro ao buscar pedidos:', err);
             return res.status(500).send('Erro ao buscar pedidos');
         }
         res.render('index', { pedidos: results });
     });
 });
 
+// Página de login
 router.get('/login', (req, res) => {
-    res.render('login');
+    const mensagem = req.session.mensagem;
+    req.session.mensagem = null; // Limpa a mensagem após exibir
+    res.render('login', { mensagem });
 });
 
+// Processo de login
 router.post('/login', (req, res) => {
     const { usuario, senha } = req.body;
 
@@ -48,46 +54,45 @@ router.post('/login', (req, res) => {
     });
 });
 
-
-router.get('/login', (req, res) => {
-    const mensagem = req.session.mensagem;
-    req.session.mensagem = null; // Limpa a mensagem após exibir
-    res.render('login', { mensagem });
-});
-
-
+// Formulário para pedido de oração
 router.get('/pedidoOracao', (req, res) => {
     res.render('add_pedido');
 });
 
+// Registro de um novo pedido de oração
 router.post('/pedidoOracao', (req, res) => {
+    console.log("Recebendo dados do formulário:", req.body); 
+
     const { nome, beneficiado, categoria } = req.body;
 
     if (!nome) {
-        return res.json({ success: false, message: "O campo nome é obrigatório." });
+        return res.json({ success: false, message: 'O campo nome é obrigatório.' });
     }
 
-    const categoriaFinal = categoria?.trim() || "Geral";
+    if(!beneficiado){
+        return res.json({succes: false, message: 'Preencha para quem é o pedido'})
+    }
+
+    const categoriaFinal = categoria?.trim() || 'Geral';
 
     db.query(
-        "INSERT INTO pedidos (nome, beneficiado, categoria, lido, data_pedido) VALUES (?, ?, ?, ?, NOW())",
+        'INSERT INTO pedidos (nome, beneficiado, categoria, lido, data_pedido) VALUES (?, ?, ?, ?, NOW())',
         [nome.trim(), beneficiado?.trim() || nome.trim(), categoriaFinal, false],
         (err) => {
             if (err) {
-                console.error("Erro ao adicionar o pedido de oração:", err);
-                return res.json({ success: false, message: "Erro ao adicionar o pedido de oração." });
+                console.error('Erro ao adicionar o pedido de oração:', err);
+                return res.json({ success: false, message: 'Erro ao adicionar o pedido de oração.' });
             }
-
-            res.json({ success: true, message: "Pedido de oração registrado com sucesso!" });
+            res.json({ success: true, message: 'Pedido enviado com sucesso!' });
         }
     );
 });
 
-
+// Página de pedidos pendentes
 router.get('/pedidos', verificarAutenticacao, (req, res) => {
     db.query('SELECT * FROM pedidos WHERE lido = FALSE', (err, results) => {
         if (err) {
-            console.error(err);
+            console.error('Erro ao buscar pedidos pendentes:', err);
             return res.status(500).send('Erro ao buscar pedidos pendentes');
         }
         res.render('pedidos', { pedidos: results });

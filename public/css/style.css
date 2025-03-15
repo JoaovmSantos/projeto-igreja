@@ -1,5 +1,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+#loader {
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100vw; 
+   height: 100vh; 
+   background: #f1f1f1; 
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   z-index: 9999;
+   visibility: visible;
+}
+.spinner {
+   width: 56px;
+   height: 56px;
+   animation: spinner-c601d3 1s infinite;
+   background-color: #474bff;
+   border-radius: 50%;
+}
+
+@keyframes spinner-c601d3 {
+   0% {
+      opacity: 0;
+      transform: scale(0) translateX(-300%);
+   }
+
+   50% {
+      opacity: 1;
+      transform: scale(1.25) translateX(0);
+   }
+
+   100% {
+      opacity: 0;
+      transform: scale(0) translateX(300%);
+   }
+}
 
 * {
     margin: 0;
