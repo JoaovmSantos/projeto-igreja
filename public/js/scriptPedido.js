@@ -49,3 +49,8 @@ const form = document.querySelector("#formPedido");
         });
     });
 });
+
+document.getElementById("btnAddDescricao").addEventListener("click", function() {
+    var descricaoContainer = document.getElementById("descricaoContainer");
+    descricaoContainer.style.display = descricaoContainer.style.display === "none" ? "block" : "none";
+});

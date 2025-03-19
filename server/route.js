@@ -61,23 +61,24 @@ router.get('/pedidoOracao', (req, res) => {
 
 // Registro de um novo pedido de oração
 router.post('/pedidoOracao', (req, res) => {
-    console.log("Recebendo dados do formulário:", req.body); 
+    console.log("Recebendo dados do formulário:", req.body);
 
-    const { nome, beneficiado, categoria } = req.body;
+    const { nome, beneficiado, categoria, descricao } = req.body;
 
     if (!nome) {
         return res.json({ success: false, message: 'O campo nome é obrigatório.' });
     }
 
-    if(!beneficiado){
-        return res.json({succes: false, message: 'Preencha para quem é o pedido'})
+    if (!beneficiado) {
+        return res.json({ success: false, message: 'Preencha para quem é o pedido.' });
     }
 
     const categoriaFinal = categoria?.trim() || 'Geral';
+    const descricaoFinal = descricao?.trim() || null; // Permitir que seja null caso não seja preenchido
 
     db.query(
-        'INSERT INTO pedidos (nome, beneficiado, categoria, lido, data_pedido) VALUES (?, ?, ?, ?, NOW())',
-        [nome.trim(), beneficiado?.trim() || nome.trim(), categoriaFinal, false],
+        'INSERT INTO pedidos (nome, beneficiado, categoria, descricao, lido, data_pedido) VALUES (?, ?, ?, ?, ?, NOW())',
+        [nome.trim(), beneficiado.trim(), categoriaFinal, descricaoFinal, false],
         (err) => {
             if (err) {
                 console.error('Erro ao adicionar o pedido de oração:', err);
@@ -87,6 +88,7 @@ router.post('/pedidoOracao', (req, res) => {
         }
     );
 });
+
 
 // Página de pedidos pendentes
 router.get('/pedidos', verificarAutenticacao, (req, res) => {
