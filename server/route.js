@@ -91,7 +91,7 @@ router.post('/pedidoOracao', (req, res) => {
 
 // Página de pedidos pendentes
 router.get('/pedidos', verificarAutenticacao, (req, res) => {
-    db.query('SELECT * FROM pedidos WHERE lido = FALSE', (err, results) => {
+    db.query('SELECT * FROM pedidos WHERE lido = FALSE ORDER BY categoria', (err, results) => {
         if (err) {
             console.error('Erro ao buscar pedidos pendentes:', err);
             return res.status(500).send('Erro ao buscar pedidos pendentes');
@@ -112,6 +112,17 @@ router.post('/lido/:id', verificarAutenticacao, (req, res) => {
     });
 });
 
+router.post('/pedidos/marcarTodos', verificarAutenticacao, (req, res) => {
+    db.query('UPDATE pedidos SET lido = TRUE WHERE lido = FALSE', (err) => {
+        if (err) {
+            console.error('Erro ao marcar todos como lido:', err);
+            return res.status(500).send('Erro ao atualizar pedidos');
+        }
+        res.redirect('/pedidos');
+    });
+});
+
+
 // Página do histórico
 router.get('/historico', verificarAutenticacao, (req, res) => {
     db.query('SELECT * FROM pedidos WHERE lido = TRUE', (err, results) => {
@@ -131,6 +142,16 @@ router.post('/historico/delete/:id', verificarAutenticacao, (req, res) => {
         if (err) {
             console.error('Erro ao excluir pedido:', err);
             return res.status(500).send('Erro ao excluir o pedido.');
+        }
+        res.redirect('/historico');
+    });
+});
+
+router.post('/historico/deleteAll', verificarAutenticacao, (req, res) => {
+    db.query('DELETE FROM pedidos WHERE lido = TRUE', (err) => {
+        if (err) {
+            console.error('Erro ao apagar todos os pedidos:', err);
+            return res.status(500).send('Erro ao apagar todos os pedidos.');
         }
         res.redirect('/historico');
     });

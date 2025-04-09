@@ -177,7 +177,7 @@ form a#cadastrar{
 
 #pedido{
    padding: 10px;
-   min-width: 55vw;
+   min-width: 45vw;
  }
 
  p#categoria{
@@ -212,3 +212,156 @@ form a#cadastrar{
  ::-webkit-scrollbar-thumb:hover {
    background: #2D3047; 
  }
+
+ /* ====== Modo Apresentação - Estilos adicionais ====== */
+#presentationContainer {
+   display: none;
+   position: fixed;
+   top: 0;
+   left: 0;
+   background-color: #2D3047;
+   width: 100vw;
+   height: 100vh;
+   z-index: 10000;
+   overflow: hidden;
+   padding: 40px;
+   color: #fff;
+   text-align: center;
+}
+
+.fullscreen-slide {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   height: 100%;
+   font-size: 2.5rem;
+   animation: fadeIn 0.5s ease-in-out;
+}
+
+.fullscreen-slide h1 {
+   font-size: 3rem;
+   margin-bottom: 20px;
+   color: #fff;
+}
+
+.fullscreen-slide p {
+   font-size: 1.8rem;
+   max-width: 80%;
+   color: #f1f1f1;
+   margin: 10px auto;
+}
+
+.hidden {
+   display: none !important;
+}
+
+@keyframes fadeIn {
+   from {
+       opacity: 0;
+       transform: translateY(20px);
+   }
+   to {
+       opacity: 1;
+       transform: translateY(0);
+   }
+}
+
+#startPresentationBtn {
+   margin: 0 auto 30px auto;
+   display: block;
+   font-size: 1rem;
+   padding: 10px 20px;
+   background-color: #2D3047;
+   color: #fff;
+   border: 2px solid #fff;
+   border-radius: 10px;
+   transition: all 0.3s ease;
+}
+
+#startPresentationBtn:hover {
+   background-color: #fff;
+   color: #2D3047;
+   border-color: #2D3047;
+}
+
+/* ====== Estilo moderno e minimalista para os cards da página pedidos.ejs ====== */
+.pagina-pedidos .card {
+   width: 100%;
+   max-width: 800px;
+   background-color: #ffffff;
+   color: #2D3047;
+   padding: 24px 28px;
+   border-radius: 16px;
+   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+   border-left: 5px solid #2D3047;
+   transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pagina-pedidos .card:hover {
+   transform: translateY(-6px);
+   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.pagina-pedidos .card-body {
+   display: flex;
+   flex-direction: column;
+   gap: 14px;
+}
+
+.pagina-pedidos .card .badge {
+   font-size: 0.85rem;
+   background-color: #2D3047;
+   color: #fff;
+   padding: 6px 14px;
+   border-radius: 20px;
+   width: fit-content;
+}
+
+.pagina-pedidos .card-title {
+   font-size: 1.1rem;
+   font-weight: 500;
+   color: #2D3047;
+   margin: 0;
+}
+
+.pagina-pedidos .d-flex.justify-content-between.mt-3 {
+   gap: 12px;
+   flex-wrap: wrap;
+   justify-content: center;
+}
+
+.pagina-pedidos .btn {
+   border-radius: 8px;
+   padding: 8px 18px;
+   font-size: 0.95rem;
+   transition: all 0.3s ease;
+}
+
+.pagina-pedidos .btn-success {
+   background-color: #4CAF50;
+   border: none;
+}
+
+.pagina-pedidos .btn-success:hover {
+   background-color: #419c46;
+}
+
+.pagina-pedidos .btn-info {
+   background-color: #2D3047;
+   color: #fff;
+   border: none;
+}
+
+.pagina-pedidos .btn-info:hover {
+   background-color: #1e2035;
+}
+
+.pedido-card {
+   padding: 10px 15px !important;
+   border-radius: 10px;
+   background-color: #fff;
+   border-left: 4px solid #2D3047;
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
