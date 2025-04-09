@@ -79,6 +79,7 @@ section.card-principal{
 .navbar-brand {
     font-size: 1.2rem;
     color: #f1f1f1;
+    display: none;
 }
 
 .navbar-brand:hover{
@@ -178,6 +179,16 @@ form a#cadastrar{
 #pedido{
    padding: 10px;
    min-width: 45vw;
+ }
+
+ div#pedidoCategoria{
+   background-color: #f1f1f1de;
+   border-radius: 10px;
+ }
+
+ td#status span{
+   padding: 10px 15px;
+   font-weight: 600;
  }
 
  p#categoria{

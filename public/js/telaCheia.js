@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Força tela cheia
         const goFullScreen = async () => {
             const el = document.documentElement;
             if (el.requestFullscreen) await el.requestFullscreen();
@@ -18,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
             else if (el.msRequestFullscreen) await el.msRequestFullscreen();
         };
 
-        // Sair do modo tela cheia
         const exitFullScreen = async () => {
             if (document.exitFullscreen) await document.exitFullscreen();
             else if (document.webkitExitFullscreen) await document.webkitExitFullscreen();
@@ -27,7 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         await goFullScreen();
 
-        // Cria o container da apresentação se ainda não existe
         let container = document.getElementById("presentationContainer");
         if (!container) {
             container = document.createElement("div");
@@ -35,9 +32,8 @@ document.addEventListener("DOMContentLoaded", () => {
             document.body.appendChild(container);
         }
 
-        container.innerHTML = ""; // Limpa qualquer conteúdo anterior
+        container.innerHTML = "";
 
-        // Botão de fechar
         const closeBtn = document.createElement("button");
         closeBtn.id = "closePresentationBtn";
         closeBtn.className = "btn btn-light position-absolute top-0 end-0 m-3 z-3";
@@ -50,30 +46,26 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         container.appendChild(closeBtn);
 
-        // Botão próximo
         const nextBtn = document.createElement("button");
         nextBtn.id = "nextSlideBtn";
         nextBtn.className = "btn btn-dark position-absolute bottom-0 end-0 m-4 z-3";
         nextBtn.innerText = "Próximo";
         container.appendChild(nextBtn);
 
-        // Mostra container
         container.style.display = "block";
         document.body.style.overflow = "hidden";
 
         let index = 0;
 
         const showSlide = () => {
-            // Remove slides antigos (exceto botões)
             container.querySelectorAll(".fullscreen-slide").forEach(el => el.remove());
 
             if (index >= pedidos.length) {
                 clearInterval(interval);
                 nextBtn.style.display = "none";
 
-                // Mostra logo no final
                 const finalSlide = document.createElement("div");
-                finalSlide.className = "fullscreen-slide";
+                finalSlide.className = "fullscreen-slide text-center text-white d-flex flex-column align-items-center justify-content-center";
                 finalSlide.innerHTML = `
                     <img src="/images/assembleia.png" alt="Logo" class="logo-img" style="max-width: 300px;">
                     <p class="mt-4" style="font-size: 2rem;">Vamos Orar</p>
@@ -89,15 +81,16 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const pedido = pedidos[index];
-            const slide = document.createElement("div");
-            slide.className = "fullscreen-slide";
+            const categoria = pedido.querySelector(".card-header")?.textContent || "";
+            const titulo = pedido.querySelector(".card-title")?.textContent || "Pedido de oração";
 
-            const nome = pedido.querySelector("h4")?.textContent || "Pedido de oração";
-            const categoria = pedido.querySelector(".badge")?.textContent || "";
+            const slide = document.createElement("div");
+            slide.className = "fullscreen-slide d-flex flex-column justify-content-center align-items-center text-white text-center";
+            slide.style.height = "100vh";
 
             slide.innerHTML = `
-                <h1>${categoria}</h1>
-                <p>${nome}</p>
+                <h1 style="font-size: 3rem;">${categoria}</h1>
+                <p style="font-size: 2rem; max-width: 80%;">${titulo}</p>
             `;
 
             container.appendChild(slide);
@@ -109,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         nextBtn.addEventListener("click", () => {
-            clearInterval(interval); 
+            clearInterval(interval);
             nextSlide();
         });
 
