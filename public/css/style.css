@@ -47,7 +47,7 @@
 
 body {
     background: #9FB4C7;
-    height: 100vh;
+    height: 100%;
     width: 100%;
 }
 
@@ -87,8 +87,8 @@ section.card-principal{
 }
 
 .card {
-    width: 90%;
-    max-width: 70%; 
+   margin-top: 100px;
+    width: 85%;
     background-color: #ffffffbe;
     color: white;
     padding: 20px;
@@ -116,7 +116,7 @@ section.card-principal{
  }
 
  .acoes{
-    margin-top: 50px;
+    margin-top: 20px;
     width: 80%;
     display: flex;
     justify-content: space-evenly;
@@ -376,3 +376,36 @@ form a#cadastrar{
    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
+@media screen and (max-width: 780px) {
+   .card {
+      margin-top: 20px;
+      width: 90%;
+      background-color: #ffffffbe;
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      filter: drop-shadow(4px 6px 4px #efefefaa);
+  }
+
+  .acoes{
+   display: block;
+  }
+
+  .acoes a button{
+   margin-top: 5px;  
+  }
+
+  form a {
+   float: right;
+   text-decoration: none;
+   padding: 5px 10px;
+   background-color: #b8860b;
+   border-radius: 5px;
+   color: #efefef;
+   font-weight: 400;
+}
+}
