@@ -88,6 +88,34 @@ router.post('/pedidoOracao', (req, res) => {
     );
 });
 
+// Formulário para adicionar visitante
+router.get('/visitante', (req, res) => {
+    res.render('add_visitante');
+});
+
+// Envio do formulário
+router.post('/visitante', (req, res) => {
+    const { nome, cidade, pertenceIgreja, nomeIgreja } = req.body;
+
+    if (!nome || !cidade || pertenceIgreja === undefined) {
+        return res.status(400).send("Dados obrigatórios faltando.");
+    }
+
+    const igreja = pertenceIgreja === 'sim' ? nomeIgreja?.trim() : null;
+
+    db.query(
+        'INSERT INTO visitantes (nome, cidade, pertence_igreja, nome_igreja) VALUES (?, ?, ?, ?)',
+        [nome.trim(), cidade.trim(), pertenceIgreja === 'sim', igreja],
+        (err) => {
+            if (err) {
+                console.error('Erro ao cadastrar visitante:', err);
+                return res.status(500).send('Erro ao salvar visitante.');
+            }
+            res.redirect('/visitante'); 
+        }
+    );
+});
+
 
 // Página de pedidos pendentes
 router.get('/pedidos', verificarAutenticacao, (req, res) => {
