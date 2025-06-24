@@ -58,7 +58,7 @@ router.get('/pedidoOracao', (req, res) => {
     res.render('add_pedido');
 });
 
-// Registro de um novo pedido de oração
+// Registrar um novo pedido de oração
 router.post('/pedidoOracao', (req, res) => {
     console.log("Recebendo dados do formulário:", req.body);
 
@@ -88,32 +88,65 @@ router.post('/pedidoOracao', (req, res) => {
     );
 });
 
-// Formulário para adicionar visitante
+// Página para adicionar visitante
 router.get('/visitante', (req, res) => {
     res.render('add_visitante');
 });
 
-// Envio do formulário
+// Envio do formulário de visitantes
 router.post('/visitante', (req, res) => {
-    const { nome, cidade, pertenceIgreja, nomeIgreja } = req.body;
+    const { nome, cidade, pertenceIgreja, nomeIgreja, apresentado} = req.body;
 
-    if (!nome || !cidade || pertenceIgreja === undefined) {
+    if (!nome || !cidade || !pertenceIgreja) {
         return res.status(400).send("Dados obrigatórios faltando.");
     }
 
     const igreja = pertenceIgreja === 'sim' ? nomeIgreja?.trim() : null;
 
     db.query(
-        'INSERT INTO visitantes (nome, cidade, pertence_igreja, nome_igreja) VALUES (?, ?, ?, ?)',
-        [nome.trim(), cidade.trim(), pertenceIgreja === 'sim', igreja],
+        'INSERT INTO visitantes (nome, cidade, pertence_igreja, nome_igreja, apresentado) VALUES (?, ?, ?, ?, ?, ?)',
+        [nome.trim(), cidade.trim(), pertenceIgreja, igreja, apresentado],
         (err) => {
             if (err) {
                 console.error('Erro ao cadastrar visitante:', err);
                 return res.status(500).send('Erro ao salvar visitante.');
             }
-            res.redirect('/visitante'); 
+            res.redirect('/visitante');
         }
     );
+});
+
+//Página de visitantes pendentes
+router.get('/visitantes', verificarAutenticacao, (req, res) =>{
+    db.query('SELECT * FROM visitantes', (err, results) =>{
+        if(err){
+            console.error('Erro ao buscar visitantes pendentes', err);
+            return res.status(500).send('Erro ao buscar visitanes pendentes')
+        }
+        res.render('visitantes', {visitantes: results});
+    })
+} )
+
+// Marcar visitante como apresentado
+router.post('/visitante/apresentar/:id', verificarAutenticacao, (req, res) => {
+    const visitanteId = req.params.id;
+    db.query('UPDATE visitantes SET apresentado = 1 WHERE id = ?', [visitanteId], (err) => {
+        if (err) {
+            console.error('Erro ao marcar visitante como apresentado:', err);
+            return res.status(500).send('Erro ao atualizar visitante.');
+        }
+        res.redirect('/visitantes');
+    });
+});
+
+router.post('/visitantes/marcarTodos', verificarAutenticacao, (req, res) => {
+    db.query('UPDATE visitantes SET apresentado = 1 WHERE apresentado IS NULL OR apresentado = 0', (err) => {
+        if (err) {
+            console.error('Erro ao marcar todos os visitantes como apresentados:', err);
+            return res.status(500).send('Erro ao atualizar visitantes.');
+        }
+        res.redirect('/visitantes');
+    });
 });
 
 
