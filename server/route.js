@@ -6,10 +6,13 @@ const router = express.Router();
 // Middleware para verificar autenticação
 function verificarAutenticacao(req, res, next) {
     if (!req.session.pastor) {
+        // Salva a URL original na sessão
+        req.session.retorno = req.originalUrl;
         return res.redirect('/login');
     }
     next();
 }
+
 
 // Página inicial (lista de pedidos não lidos)
 router.get('/', (req, res) => {
@@ -51,6 +54,13 @@ router.post('/login', (req, res) => {
         req.session.pastor = true;
         return res.json({ success: true, message: 'Login realizado com sucesso!' });
     });
+    req.session.pastor = true;
+
+// Redireciona para onde o usuário queria ir originalmente, ou para '/' se não houver destino salvo
+const destino = req.session.retorno || '/';
+req.session.retorno = null;
+return res.redirect(destino);
+
 });
 
 // Formulário para pedido de oração
@@ -104,16 +114,16 @@ router.post('/visitante', (req, res) => {
     const igreja = pertenceIgreja === 'sim' ? nomeIgreja?.trim() : null;
 
     db.query(
-        'INSERT INTO visitantes (nome, cidade, pertence_igreja, nome_igreja, apresentado) VALUES (?, ?, ?, ?, ?, ?)',
-        [nome.trim(), cidade.trim(), pertenceIgreja, igreja, apresentado],
-        (err) => {
-            if (err) {
-                console.error('Erro ao cadastrar visitante:', err);
-                return res.status(500).send('Erro ao salvar visitante.');
-            }
-            res.redirect('/visitante');
+    'INSERT INTO visitantes (nome, cidade, pertence_igreja, nome_igreja) VALUES (?, ?, ?, ?)',
+    [nome.trim(), cidade.trim(), pertenceIgreja, igreja],
+    (err) => {
+        if (err) {
+            console.error('Erro ao cadastrar visitante:', err);
+            return res.status(500).send('Erro ao salvar visitante.');
         }
-    );
+        res.redirect('/visitante');
+    }
+);
 });
 
 //Página de visitantes pendentes
