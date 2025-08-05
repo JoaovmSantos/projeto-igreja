@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!startBtn) return;
 
     startBtn.addEventListener("click", async () => {
-        const cards = document.querySelectorAll("#pedido");
+        const cards = document.querySelectorAll("#visitante");
         if (cards.length === 0) {
             alert("Nenhum visitante disponível para apresentar.");
             return;
@@ -76,20 +76,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 nextBtn.style.display = "none";
 
                 const finalSlide = document.createElement("div");
-                finalSlide.className = "fullscreen-slide text-center text-white d-flex flex-column align-items-center justify-content-center";
-                finalSlide.style.height = "100vh";
-                finalSlide.innerHTML = `
-                    <img src="/images/assembleia.png" alt="Logo" class="logo-img" style="max-width: 300px;">
-                    <p class="mt-4" style="font-size: 2rem;">Sejam todos bem-vindos!</p>
-                `;
-                container.appendChild(finalSlide);
+                    finalSlide.className = "fullscreen-slide text-center text-white d-flex flex-column align-items-center justify-content-center";
+                    finalSlide.style.height = "100vh";
 
-                setTimeout(async () => {
-                    container.style.display = "none";
-                    document.body.style.overflow = "auto";
-                    await exitFullScreen();
-                }, 4000);
-                return;
+                    finalSlide.innerHTML = `
+                        <img src="/images/assembleia.png" alt="Logo" class="fullscreenLogo-img" style="height: 80vh; max-width: 100%;">
+                        <p class="mt-4" style="font-size: 5rem;">Sois bem vindos em nome de Jesus!</p>
+                    `;
+
+                    container.appendChild(finalSlide);
+
+                    setTimeout(async () => {
+                        container.style.display = "none";
+                        document.body.style.overflow = "auto";
+                        await exitFullScreen();
+                    }, 4000);
+
             }
 
             const visitante = cards[index];
@@ -102,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             slide.innerHTML = `
                 <h1 style="font-size: 3rem;">${cidade}</h1>
-                <p style="font-size: 2.5rem; max-width: 80%;">${nomeTexto}</p>
+                <p style="font-size: 5rem;">${nomeTexto}</p>
             `;
 
             container.appendChild(slide);

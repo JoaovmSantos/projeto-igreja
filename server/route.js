@@ -34,7 +34,7 @@ router.get('/login', (req, res) => {
 
 // Processo de login
 router.post('/login', (req, res) => {
-    const { usuario, senha } = req.body;
+    const { usuario, senha, destino } = req.body;
 
     if (!usuario || !senha) {
         return res.json({ success: false, message: 'Usuário e senha são obrigatórios!' });
@@ -52,16 +52,13 @@ router.post('/login', (req, res) => {
 
         // Se encontrou um usuário com as credenciais corretas, cria a sessão
         req.session.pastor = true;
-        return res.json({ success: true, message: 'Login realizado com sucesso!' });
+
+        // Redireciona para o destino informado (ou padrão '/')
+        const redirecionarPara = destino || '/';
+        return res.json({ success: true, redirect: redirecionarPara });
     });
-    req.session.pastor = true;
-
-// Redireciona para onde o usuário queria ir originalmente, ou para '/' se não houver destino salvo
-const destino = req.session.retorno || '/';
-req.session.retorno = null;
-return res.redirect(destino);
-
 });
+
 
 // Formulário para pedido de oração
 router.get('/pedidoOracao', (req, res) => {

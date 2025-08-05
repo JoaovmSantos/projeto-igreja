@@ -67,8 +67,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const finalSlide = document.createElement("div");
                 finalSlide.className = "fullscreen-slide text-center text-white d-flex flex-column align-items-center justify-content-center";
                 finalSlide.innerHTML = `
-                    <img src="/images/assembleia.png" alt="Logo" class="logo-img" style="max-width: 300px;">
-                    <p class="mt-4" style="font-size: 2rem;">Vamos Orar</p>
+                    <img src="/images/assembleia.png" alt="Logo" class="fullscreenLogo-img" style="max-width: 300px;">
+                    <p class="mt-4" style="font-size: 5rem;">Vamos Orar</p>
                 `;
                 container.appendChild(finalSlide);
 
@@ -81,16 +81,16 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             const pedido = pedidos[index];
-            const categoria = pedido.querySelector(".card-header")?.textContent || "";
-            const titulo = pedido.querySelector(".card-title")?.textContent || "Pedido de oração";
+            const categoria = pedido.querySelector(".pedidoCategoria")?.textContent || "";
+            const titulo = pedido.querySelector(".pedidoDescricao")?.textContent || "Pedido de oração";
 
             const slide = document.createElement("div");
             slide.className = "fullscreen-slide d-flex flex-column justify-content-center align-items-center text-white text-center";
             slide.style.height = "100vh";
 
             slide.innerHTML = `
-                <h1 style="font-size: 3rem;">${categoria}</h1>
-                <p style="font-size: 2rem; max-width: 80%;">${titulo}</p>
+                <h1 style="font-size: 3rem;">${titulo}</h1>
+                <p style="font-size: 2rem; max-width: 80%;">${categoria}</p>
             `;
 
             container.appendChild(slide);

@@ -38,17 +38,21 @@
                 </div>
             <% } else { %>
                 <% pedidos.forEach(pedido => { %>
-                    <div class="card border-success bg-dark mb-3 col-md-4" style="max-width: 18rem;" id="pedido">
-                        <div class="card-header border-success" id="pedidoCategoria"><%= pedido.categoria %></div>
-                        <div class="card-body text-success">
-                          <h5 class="card-title text-white"><%= pedido.nome %> pede oração em favor de <%= pedido.beneficiado %> por <%= pedido.categoria %></h5>
-                        </div>
-                        <div class="card-footer bg-transparent border-success">
-                            <form action="/lido/<%= pedido.id %>" method="POST" style="display: contents;">
-                                <button type="submit" class="btn btn-success">Lido</button>
-                            </form>
-                            <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#detalhesModal-<%= pedido.id %>">Detalhes</button>
-                        </div>
+                    <div class="list-group" id="pedido">
+                        <a href="" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1 pedidoCategoria"><%= pedido.categoria %></h5>
+                            <small class="pedidoData"><%= new Date(pedido.data_pedido).toLocaleString("pt-BR", {day: "2-digit", month: "2-digit", year:"numeric"}) %></small>
+                            </div>
+                            <p class="mb-1 pedidoDescricao"><%= pedido.nome %> pede oração em favor de <%= pedido.beneficiado %> por <%= pedido.categoria %></p>
+                            <div class="pedidoAction" style="float: right;">
+                                <form action="/lido/<%= pedido.id %>" method="POST" style="display: contents;">
+                                    <button type="submit" class="btn btn-success">✓</button>
+                                </form>
+                                <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#detalhesModal-<%= pedido.id %>">+</button>
+                            </div>
+                            <small></small>
+                        </a>
                     </div>
                     <!-- Modal de Detalhes -->
                     <div class="modal fade" id="detalhesModal-<%= pedido.id %>" tabindex="-1" aria-labelledby="detalhesModalLabel" aria-hidden="true">

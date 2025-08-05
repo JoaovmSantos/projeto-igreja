@@ -83,7 +83,7 @@ section.card-principal{
       padding: 40px 30px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
       text-align: center;
-      max-width: 600px;
+      /* max-width: 600px; */
       width: 100%;
     }
 
@@ -119,6 +119,19 @@ section.card-principal{
     margin: 10px;
     width: 60px;
     height: 60px;
+    border-radius: 50%;
+    object-fit: contain;
+    border: 3px solid #9FB4C7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: inset 3px 5px 5px #9FB4C7;
+}
+
+.fullscreenLogo-img {
+    margin: 10px;
+    width: 300px;
+    height: 300px;
     border-radius: 50%;
     object-fit: contain;
     border: 3px solid #9FB4C7;
@@ -232,6 +245,22 @@ form a#cadastrar{
    padding: 10px;
    min-width: 45vw;
  }
+
+h5.pedidoCategoria{
+   padding: 10px 5px;
+   background-color: #343a40;
+   border-radius: 8px;
+   color: whitesmoke;
+   font-size: 1rem;
+}
+
+small.pedidoData{
+   text-decoration: underline;
+}
+
+.pedidoDescricao{
+   font-size: 1.3rem;
+}
 
  div#pedidoCategoria{
    background-color: #f1f1f1de;
@@ -348,85 +377,6 @@ form a#cadastrar{
    border-color: #2D3047;
 }
 
-/* ====== Estilo moderno e minimalista para os cards da página pedidos.ejs ====== */
-.pagina-pedidos .card {
-   width: 100%;
-   max-width: 800px;
-   background-color: #ffffff;
-   color: #2D3047;
-   padding: 24px 28px;
-   border-radius: 16px;
-   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-   border-left: 5px solid #2D3047;
-   transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.pagina-pedidos .card:hover {
-   transform: translateY(-6px);
-   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
-}
-
-.pagina-pedidos .card-body {
-   display: flex;
-   flex-direction: column;
-   gap: 14px;
-}
-
-.pagina-pedidos .card .badge {
-   font-size: 0.85rem;
-   background-color: #2D3047;
-   color: #fff;
-   padding: 6px 14px;
-   border-radius: 20px;
-   width: fit-content;
-}
-
-.pagina-pedidos .card-title {
-   font-size: 1.1rem;
-   font-weight: 500;
-   color: #2D3047;
-   margin: 0;
-}
-
-.pagina-pedidos .d-flex.justify-content-between.mt-3 {
-   gap: 12px;
-   flex-wrap: wrap;
-   justify-content: center;
-}
-
-.pagina-pedidos .btn {
-   border-radius: 8px;
-   padding: 8px 18px;
-   font-size: 0.95rem;
-   transition: all 0.3s ease;
-}
-
-.pagina-pedidos .btn-success {
-   background-color: #4CAF50;
-   border: none;
-}
-
-.pagina-pedidos .btn-success:hover {
-   background-color: #419c46;
-}
-
-.pagina-pedidos .btn-info {
-   background-color: #2D3047;
-   color: #fff;
-   border: none;
-}
-
-.pagina-pedidos .btn-info:hover {
-   background-color: #1e2035;
-}
-
-.pedido-card {
-   padding: 10px 15px !important;
-   border-radius: 10px;
-   background-color: #fff;
-   border-left: 4px solid #2D3047;
-   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
 
 @media screen and (max-width: 780px) {
    .card {
