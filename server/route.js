@@ -12,7 +12,7 @@ function verificarAutenticacao(req, res, next) {
     next();
 }
 
-// Página inicial (lista de pedidos não lidos)
+// Página inicial
 router.get('/', (req, res) => {
     db.query('SELECT * FROM pedidos WHERE lido = FALSE', (err, results) => {
         if (err) {
@@ -58,7 +58,7 @@ router.post('/login', (req, res) => {
 });
 
 
-// Formulário para pedido de oração
+// Formulário para adicionar pedido de oração
 router.get('/pedidoOracao', (req, res) => {
     res.render('add_pedido');
 });
@@ -92,6 +92,148 @@ router.post('/pedidoOracao', (req, res) => {
         }
     );
 });
+
+// Página de pedidos pendentes
+router.get('/pedidos', verificarAutenticacao, (req, res) => {
+    db.query('SELECT * FROM pedidos WHERE lido = FALSE ORDER BY categoria', (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar pedidos pendentes:', err);
+            return res.status(500).send('Erro ao buscar pedidos pendentes');
+        }
+        res.render('pedidos', { pedidos: results });
+    });
+});
+
+//Marcar Pedido como Lido
+router.post('/lido/:id', verificarAutenticacao, (req, res) => {
+    const pedidoId = req.params.id;
+
+    db.query('UPDATE pedidos SET lido = TRUE WHERE id = ?', [pedidoId], (err) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Erro ao atualizar o pedido');
+        }
+        res.redirect('/pedidos');
+    });
+});
+
+//Marcar todos os pedidos como lido
+router.post('/pedidos/marcarTodos', verificarAutenticacao, (req, res) => {
+    db.query('UPDATE pedidos SET lido = TRUE WHERE lido = FALSE', (err) => {
+        if (err) {
+            console.error('Erro ao marcar todos como lido:', err);
+            return res.status(500).send('Erro ao atualizar pedidos');
+        }
+        res.redirect('/pedidos');
+    });
+});
+
+// Histórico Pedidos de Oração
+router.get('/historico', verificarAutenticacao, (req, res) => {
+    db.query('SELECT * FROM pedidos WHERE lido = TRUE', (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Erro ao buscar histórico de pedidos');
+        }
+        res.render('historico', { pedidos: results });
+    });
+});
+
+// Excluir Pedidos de Oração do Histórico
+router.post('/historico/delete/:id', verificarAutenticacao, (req, res) => {
+    const pedidoId = req.params.id;
+
+    db.query('DELETE FROM pedidos WHERE id = ?', [pedidoId], (err) => {
+        if (err) {
+            console.error('Erro ao excluir pedido:', err);
+            return res.status(500).send('Erro ao excluir o pedido.');
+        }
+        res.redirect('/historico');
+    });
+});
+
+//Excluir todos os pedidos de oração
+router.post('/historico/deleteAll', verificarAutenticacao, (req, res) => {
+    db.query('DELETE FROM pedidos WHERE lido = TRUE', (err) => {
+        if (err) {
+            console.error('Erro ao apagar todos os pedidos:', err);
+            return res.status(500).send('Erro ao apagar todos os pedidos.');
+        }
+        res.redirect('/historico');
+    });
+});
+
+// Exportar pedidos de oração em PDF
+const PDFDocument = require('pdfkit');
+
+router.get('/exportar_pedidos', (req, res) => {
+    db.query('SELECT * FROM pedidos ORDER BY categoria DESC', (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Erro ao buscar pedidos.');
+        }
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', 'attachment; filename="relatorio_pedidos_oracao.pdf"');
+
+        const doc = new PDFDocument({ margin: 30, size: 'A4' });
+        doc.pipe(res);
+
+        // Cabeçalho do documento
+        doc.fontSize(20)
+           .fillColor('#2c3e50')
+           .text('Relatório de Pedidos de Oração', { align: 'center', underline: true });
+        doc.moveDown(1);
+
+        // Cabeçalho da tabela 
+        const tableTop = 100;
+        const columnPositions = {
+            nome: 30,
+            beneficiado: 130,
+            categoria: 250,
+            data: 350
+        };
+
+        doc.rect(30, tableTop - 5, 540, 20)
+           .fill('#ecf0f1')
+           .stroke();
+
+        doc.fontSize(10).fillColor('#000').font('Helvetica-Bold');
+        doc.text('Nome', columnPositions.nome, tableTop);
+        doc.text('Beneficiado', columnPositions.beneficiado, tableTop);
+        doc.text('Categoria', columnPositions.categoria, tableTop);
+        doc.text('Data', columnPositions.data, tableTop, { width: 80, align: 'center' });
+
+        // Linhas da tabela
+        let y = tableTop + 25;
+        let rowIndex = 0;
+
+        results.forEach((p) => {
+            // Alterna cor de fundo para linhas
+            if (rowIndex % 2 === 0) {
+                doc.rect(30, y - 5, 540, 20).fill('#f9f9f9').stroke();
+            }
+
+            doc.font('Helvetica').fillColor('#000');
+            doc.text(p.nome, columnPositions.nome, y, { width: 90 });
+            doc.text(p.beneficiado, columnPositions.beneficiado, y, { width: 100 });
+            doc.text(p.categoria, columnPositions.categoria, y, { width: 90 });
+            doc.text(new Date(p.data_pedido).toLocaleDateString('pt-BR'), columnPositions.data, y, { width: 80, align: 'center' });
+
+            y += 20;
+            rowIndex++;
+
+            // Quebra de página
+            if (y > 750) {
+                doc.addPage();
+                y = 50;
+            }
+        });
+
+        doc.end();
+    });
+});
+
 
 // Página para adicionar visitante
 router.get('/visitante', (req, res) => {
@@ -145,6 +287,7 @@ router.post('/visitante/apresentar/:id', verificarAutenticacao, (req, res) => {
     });
 });
 
+//Marcar todos os visitantes como apresentados
 router.post('/visitantes/marcarTodos', verificarAutenticacao, (req, res) => {
     db.query('UPDATE visitantes SET apresentado = 1 WHERE apresentado IS NULL OR apresentado = 0', (err) => {
         if (err) {
@@ -166,6 +309,7 @@ router.get('/historico_visitantes', async (req, res) => {
     });
 });
 
+//Apagar registro de visitantes
 router.post('/historico_visitantes/delete/:id', (req, res) => {
     const id = req.params.id;
     db.query('DELETE FROM visitantes WHERE id = ?', [id], (err) => {
@@ -174,6 +318,7 @@ router.post('/historico_visitantes/delete/:id', (req, res) => {
     });
 });
 
+//Apagar todos os visitantes
 router.post('/historico_visitantes/deleteAll', (req, res) => {
     db.query('DELETE FROM visitantes', (err) => {
         if (err) console.error(err);
@@ -181,11 +326,11 @@ router.post('/historico_visitantes/deleteAll', (req, res) => {
     });
 });
 
-const PDFDocument = require('pdfkit');
+
+// Exportar os visitantes em PDF
 const fs = require('fs');
 const path = require('path');
 
-// Exportar os visitantes em PDF
 router.get('/exportar_visitantes', (req, res) => {
     db.query('SELECT * FROM visitantes ORDER BY data_visita DESC', (err, visitantes) => {
         if (err) {
@@ -262,75 +407,6 @@ router.get('/exportar_visitantes', (req, res) => {
     });
 });
 
-
-
-// Página de pedidos pendentes
-router.get('/pedidos', verificarAutenticacao, (req, res) => {
-    db.query('SELECT * FROM pedidos WHERE lido = FALSE ORDER BY categoria', (err, results) => {
-        if (err) {
-            console.error('Erro ao buscar pedidos pendentes:', err);
-            return res.status(500).send('Erro ao buscar pedidos pendentes');
-        }
-        res.render('pedidos', { pedidos: results });
-    });
-});
-
-router.post('/lido/:id', verificarAutenticacao, (req, res) => {
-    const pedidoId = req.params.id;
-
-    db.query('UPDATE pedidos SET lido = TRUE WHERE id = ?', [pedidoId], (err) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).send('Erro ao atualizar o pedido');
-        }
-        res.redirect('/pedidos');
-    });
-});
-
-router.post('/pedidos/marcarTodos', verificarAutenticacao, (req, res) => {
-    db.query('UPDATE pedidos SET lido = TRUE WHERE lido = FALSE', (err) => {
-        if (err) {
-            console.error('Erro ao marcar todos como lido:', err);
-            return res.status(500).send('Erro ao atualizar pedidos');
-        }
-        res.redirect('/pedidos');
-    });
-});
-
-
-// Histórico Pedidos de Oração
-router.get('/historico', verificarAutenticacao, (req, res) => {
-    db.query('SELECT * FROM pedidos WHERE lido = TRUE', (err, results) => {
-        if (err) {
-            console.error(err);
-            return res.status(500).send('Erro ao buscar histórico de pedidos');
-        }
-        res.render('historico', { pedidos: results });
-    });
-});
-
-// Excluir Pedidos de Oração do Histórico
-router.post('/historico/delete/:id', verificarAutenticacao, (req, res) => {
-    const pedidoId = req.params.id;
-
-    db.query('DELETE FROM pedidos WHERE id = ?', [pedidoId], (err) => {
-        if (err) {
-            console.error('Erro ao excluir pedido:', err);
-            return res.status(500).send('Erro ao excluir o pedido.');
-        }
-        res.redirect('/historico');
-    });
-});
-
-router.post('/historico/deleteAll', verificarAutenticacao, (req, res) => {
-    db.query('DELETE FROM pedidos WHERE lido = TRUE', (err) => {
-        if (err) {
-            console.error('Erro ao apagar todos os pedidos:', err);
-            return res.status(500).send('Erro ao apagar todos os pedidos.');
-        }
-        res.redirect('/historico');
-    });
-});
 
 // Logout do sistema
 router.get('/logout', (req, res) => {
