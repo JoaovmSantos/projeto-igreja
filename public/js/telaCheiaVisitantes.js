@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     finalSlide.style.height = "100vh";
 
                     finalSlide.innerHTML = `
-                        <img src="/images/assembleia.png" alt="Logo" class="fullscreenLogo-img" style="height: 80vh; max-width: 100%;">
+                        <img src="/images/assembleia.png" alt="Logo" class="fullscreenLogo-img">
                         <p class="mt-4" style="font-size: 5rem;">Sois bem vindos em nome de Jesus!</p>
                     `;
 

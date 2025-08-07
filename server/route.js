@@ -1,6 +1,5 @@
 const express = require('express');
 const db = require('./db');
-
 const router = express.Router();
 
 // Middleware para verificar autenticação
@@ -12,7 +11,6 @@ function verificarAutenticacao(req, res, next) {
     }
     next();
 }
-
 
 // Página inicial (lista de pedidos não lidos)
 router.get('/', (req, res) => {
@@ -124,15 +122,16 @@ router.post('/visitante', (req, res) => {
 });
 
 //Página de visitantes pendentes
-router.get('/visitantes', verificarAutenticacao, (req, res) =>{
-    db.query('SELECT * FROM visitantes', (err, results) =>{
-        if(err){
+router.get('/visitantes', verificarAutenticacao, (req, res) => {
+    db.query('SELECT * FROM visitantes WHERE apresentado IS NULL OR apresentado = 0', (err, results) => {
+        if (err) {
             console.error('Erro ao buscar visitantes pendentes', err);
-            return res.status(500).send('Erro ao buscar visitanes pendentes')
+            return res.status(500).send('Erro ao buscar visitantes pendentes');
         }
-        res.render('visitantes', {visitantes: results});
-    })
-} )
+        res.render('visitantes', { visitantes: results });
+    });
+});
+
 
 // Marcar visitante como apresentado
 router.post('/visitante/apresentar/:id', verificarAutenticacao, (req, res) => {
@@ -155,6 +154,114 @@ router.post('/visitantes/marcarTodos', verificarAutenticacao, (req, res) => {
         res.redirect('/visitantes');
     });
 });
+
+//Histórico de Visitantes
+router.get('/historico_visitantes', async (req, res) => {
+    db.query('SELECT * FROM visitantes ORDER BY data_visita DESC', (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Erro ao buscar visitantes.');
+        }
+        res.render('historico_visitantes', { visitantes: results });
+    });
+});
+
+router.post('/historico_visitantes/delete/:id', (req, res) => {
+    const id = req.params.id;
+    db.query('DELETE FROM visitantes WHERE id = ?', [id], (err) => {
+        if (err) console.error(err);
+        res.redirect('/historico_visitantes');
+    });
+});
+
+router.post('/historico_visitantes/deleteAll', (req, res) => {
+    db.query('DELETE FROM visitantes', (err) => {
+        if (err) console.error(err);
+        res.redirect('/historico_visitantes');
+    });
+});
+
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
+const path = require('path');
+
+// Exportar os visitantes em PDF
+router.get('/exportar_visitantes', (req, res) => {
+    db.query('SELECT * FROM visitantes ORDER BY data_visita DESC', (err, visitantes) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Erro ao buscar visitantes.');
+        }
+
+        const PDFDocument = require('pdfkit');
+        const doc = new PDFDocument({ margin: 40, size: 'A4' });
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', 'attachment; filename="relatorio_visitantes.pdf"');
+        doc.pipe(res);
+
+        // Título
+        doc.fontSize(20).text('Relatório de Visitantes Assembléia de Deus Min. Belém de Osvaldo Cruz', { align: 'center' });
+        doc.moveDown(1.5);
+
+        const tableTop = doc.y;
+        const columnPositions = {
+            nome: 40,
+            cidade: 160,
+            possuiIgreja: 260,
+            nomeIgreja: 370,
+            dataVisita: 480,
+        };
+
+        // Cabeçalho com fundo cinza
+        doc
+            .rect(40, tableTop - 2, 520, 20)
+            .fill('#eeeeee')
+            .fillColor('#000')
+            .fontSize(10)
+            .text('Nome', columnPositions.nome, tableTop, { width: 120, align: 'center' })
+            .text('Cidade', columnPositions.cidade, tableTop, { width: 100, align: 'center' })
+            .text('Pertence a igreja?', columnPositions.possuiIgreja, tableTop, { width: 100, align: 'center' })
+            .text('Nome da Igreja', columnPositions.nomeIgreja, tableTop, { width: 100, align: 'center' })
+            .text('Data da Visita', columnPositions.dataVisita, tableTop, { width: 100, align: 'center' });
+
+        // Linha após o cabeçalho
+        doc
+            .moveTo(40, tableTop + 18)
+            .lineTo(560, tableTop + 18)
+            .stroke();
+
+        let y = tableTop + 25;
+
+        visitantes.forEach(v => {
+            if (y > 750) {
+                doc.addPage();
+                y = 50;
+            }
+
+            doc
+                .fontSize(9)
+                .fillColor('#000')
+                .text(v.nome, columnPositions.nome, y, { width: 120, align: 'center' })
+                .text(v.cidade, columnPositions.cidade, y, { width: 100, align: 'center' })
+                .text(v.possui_igreja?.trim().toLowerCase() == 'sim' ? 'Sim' : 'Não', columnPositions.possuiIgreja, y, { width: 100, align: 'center' })
+                .text(v.nome_igreja || '-', columnPositions.nomeIgreja, y, { width: 100, align: 'center' })
+                .text(new Date(v.data_visita).toLocaleDateString('pt-BR'), columnPositions.dataVisita, y, { width: 100, align: 'center' });
+
+            y += 20;
+
+            // Linha separadora
+            doc
+                .moveTo(40, y - 2)
+                .lineTo(560, y - 2)
+                .strokeColor('#ccc')
+                .stroke();
+        });
+
+        doc.end();
+    });
+});
+
 
 
 // Página de pedidos pendentes
@@ -191,7 +298,7 @@ router.post('/pedidos/marcarTodos', verificarAutenticacao, (req, res) => {
 });
 
 
-// Página do histórico
+// Histórico Pedidos de Oração
 router.get('/historico', verificarAutenticacao, (req, res) => {
     db.query('SELECT * FROM pedidos WHERE lido = TRUE', (err, results) => {
         if (err) {
@@ -202,7 +309,7 @@ router.get('/historico', verificarAutenticacao, (req, res) => {
     });
 });
 
-// Rota para excluir pedidos do histórico
+// Excluir Pedidos de Oração do Histórico
 router.post('/historico/delete/:id', verificarAutenticacao, (req, res) => {
     const pedidoId = req.params.id;
 
